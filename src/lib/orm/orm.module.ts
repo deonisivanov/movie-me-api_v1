@@ -13,7 +13,7 @@ import * as path from 'path';
         username: configService.getOrThrow('typeorm.username', { infer: true }),
         password: configService.getOrThrow('typeorm.password', { infer: true }),
         database: configService.getOrThrow('typeorm.database', { infer: true }),
-        entities: [path.join(__dirname, '..', 'entities', '*.entity.{ts,js}')],
+        entities: [path.join(__dirname, '..', '..', 'entities', '*.entity.{ts,js}')],
         synchronize: true
       }),
       inject: [ConfigService]

@@ -9,16 +9,20 @@ export class BaseService<Entity> {
     private readonly repository: Repository<Entity>
   ) {}
 
-  public async findOne(options: FindOneOptions<Entity>): Promise<Entity | null> {
+  public async findOne(options: FindOneOptions<Entity>): Promise<Entity | undefined> {
     return await this.repository.findOne(options);
   }
 
-  public async findOneById(id: number | string): Promise<Entity | null> {
+  public async findOneById(id: number | string): Promise<Entity | undefined> {
     return await this.repository.findOne({ where: { id } as any });
   }
 
-  public create(body: DeepPartial<Entity>): Entity {
-    return this.repository.create(body);
+  public async findOneByLogin(login: string): Promise<Entity | undefined> {
+    return await this.repository.findOne({ where: { login } as any });
+  }
+
+  public async create(body: DeepPartial<Entity>): Promise<Entity> {
+    return await this.repository.create(body);
   }
 
   public async insert(body: DeepPartial<Entity>): Promise<InsertResult> {

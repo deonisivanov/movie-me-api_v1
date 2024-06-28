@@ -24,8 +24,8 @@
       "@common": ["src/common"],
       //   "@common/*": ["src/common/*"],
 
-      "@modules": ["src/modules"],
-      //   "@modules/*": ["src/modules/*"],
+      //   "@modules": ["src/modules"],
+      "@modules/*": ["src/modules/*"],
 
       "@entities": ["src/entities"]
       //   "@entities/*": ["src/entities/*"]
