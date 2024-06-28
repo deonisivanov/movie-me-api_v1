@@ -11,5 +11,9 @@ declare global {
     id: string;
   }
 
+  interface AuthenticatedUserInfo {
+    id: string;
+  }
+
   type RefreshTokenPayload = {};
 }

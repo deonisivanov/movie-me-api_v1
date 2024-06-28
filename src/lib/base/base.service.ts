@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeepPartial, Entity, InsertResult } from 'typeorm';
+import { Repository, DeepPartial, Entity, InsertResult, FindOneOptions } from 'typeorm';
 
 @Injectable()
 export class BaseService<Entity> {
@@ -9,6 +8,14 @@ export class BaseService<Entity> {
     @InjectRepository(Entity)
     private readonly repository: Repository<Entity>
   ) {}
+
+  public async findOne(options: FindOneOptions<Entity>): Promise<Entity | null> {
+    return await this.repository.findOne(options);
+  }
+
+  public async findOneById(id: number | string): Promise<Entity | null> {
+    return await this.repository.findOne({ where: { id } as any });
+  }
 
   public create(body: DeepPartial<Entity>): Entity {
     return this.repository.create(body);
