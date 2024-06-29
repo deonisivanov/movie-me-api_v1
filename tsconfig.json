@@ -19,18 +19,12 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@lib": ["src/lib"],
-      //   "@lib/*": ["src/lib/*"],
-
       "@common": ["src/common"],
       "@common/*": ["src/common/*"],
-
-      //   "@modules": ["src/modules"],
       "@modules/*": ["src/modules/*"],
-
       "@entities": ["src/entities"]
-      //   "@entities/*": ["src/entities/*"]
     }
   },
   "include": ["test/**/*", "src/**/*", "eslint.config.js"],
-  "typeRoots": ["src/common/@types/typings", "src/lib/@types/token"]
+  "typeRoots": ["src/common/@types/typings"]
 }

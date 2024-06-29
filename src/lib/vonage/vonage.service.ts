@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Auth } from '@vonage/auth';
 import { Vonage } from '@vonage/server-sdk';
+
 import { BaseResolver } from '../base';
 
 @Injectable()

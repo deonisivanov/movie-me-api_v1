@@ -1,5 +1,6 @@
-import { Controller, applyDecorators } from '@nestjs/common';
+import { applyDecorators,Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import { Auth } from './auth.decorator';
 
 /**

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { TokensRepository } from './tokens.repository';
+import type { JwtSignOptions } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
+
+import { TokensRepository } from './tokens.repository';
 
 @Injectable()
 export class TokensService {

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '@songkeys/nestjs-redis';
 import type { Redis } from 'ioredis';
+
 import { OTP_CODE_EXPIRE_TIME_MS } from './otp.constants';
 
 @Injectable()

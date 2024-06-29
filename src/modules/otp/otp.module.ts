@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { OtpService } from './otp.service';
-import { OtpRepository } from './otp.repository';
+
 import { MailerService, VonageService } from '@lib';
+
+import { OtpRepository } from './otp.repository';
+import { OtpService } from './otp.service';
 
 @Module({
   imports: [],

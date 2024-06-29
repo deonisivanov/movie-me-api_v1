@@ -1,7 +1,7 @@
 import type { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { Injectable, RequestTimeoutException } from '@nestjs/common';
 import type { Observable } from 'rxjs';
-import { TimeoutError, throwError } from 'rxjs';
+import { throwError,TimeoutError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 
 @Injectable()

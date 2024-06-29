@@ -1,11 +1,14 @@
-import { User } from '@entities';
-import { BaseService } from '@lib';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto';
-import { PasswordUtils } from 'src/utils';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PasswordUtils } from 'src/utils';
+import { Repository } from 'typeorm';
+
+import { BaseService } from '@lib';
+
+import { User } from '@entities';
+
+import type { CreateUserDto } from './dto';
 
 @Injectable()
 export class UsersService extends BaseService<User> {

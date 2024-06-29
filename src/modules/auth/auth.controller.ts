@@ -1,10 +1,11 @@
 import { Body, Get, Post, Query, Res, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
-import { BaseResolver } from '@lib';
 import { Cookie, CurrentUser, GenericController, SwaggerResponse } from 'src/common/decorators';
 import { GoogleGuard } from 'src/common/guards';
+
 import { User } from '@entities';
+
+import { AuthService } from './auth.service';
+import { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
 
 @GenericController('Auth', false)
 export class AuthController {

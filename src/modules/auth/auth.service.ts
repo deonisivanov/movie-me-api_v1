@@ -1,11 +1,15 @@
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { PasswordUtils } from 'src/utils';
+
 import { BaseResolver } from '@lib';
+
 import { OtpService } from '@modules/otp';
 import { TokensService } from '@modules/tokens';
 import { UsersService } from '@modules/users';
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
-import { PasswordUtils } from 'src/utils';
-import { User } from '@entities';
+
+import type { User } from '@entities';
+
+import type { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
 
 @Injectable()
 export class AuthService extends BaseResolver {

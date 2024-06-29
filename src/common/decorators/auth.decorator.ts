@@ -1,6 +1,7 @@
 import type { CanActivate, Type } from '@nestjs/common';
-import { UseGuards, applyDecorators } from '@nestjs/common';
+import { applyDecorators,UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
+
 import { JwtAuthGuard } from '@common/guards';
 
 interface AuthGuard {

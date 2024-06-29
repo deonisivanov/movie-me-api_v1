@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { OtpRepository } from './otp.repository';
+
 import { BaseResolver, MailerService, VonageService } from '@lib';
+
 import { OTP_CODE_EXPIRE_TIME_MS } from './otp.constants';
+import { OtpRepository } from './otp.repository';
 
 @Injectable()
 export class OtpService extends BaseResolver {

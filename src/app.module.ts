@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, OrmModule, NestRedisModule, NestScheduleModule } from '@lib';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+
+import { ConfigModule, NestRedisModule, NestScheduleModule, OrmModule } from '@lib';
+
+import { TimeoutInterceptor } from '@common/interceptors';
+
 import { AuthModule } from '@modules/auth';
 import { UsersModule } from '@modules/users';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { TimeoutInterceptor } from '@common/interceptors';
 
 @Module({
   imports: [ConfigModule, OrmModule, NestRedisModule, UsersModule, AuthModule, NestScheduleModule],
