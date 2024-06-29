@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { GoogleStrategy, JwtAuthStrategy } from './strategies';
 import { UsersModule } from '@modules/users';
 import { TokensModule } from '@modules/tokens';
-import { OtpService } from '@modules/otp';
+
 import { OtpModule } from '@modules/otp/otp.module';
 
 @Module({

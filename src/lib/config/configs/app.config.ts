@@ -5,4 +5,6 @@ export const app = registerAs('app', () => ({
   url: process.env.APP_URL,
   port: Number(process.env.APP_PORT) || 1111,
   env: process.env.NODE_ENV || 'development',
+  swaggerUser: process.env.SWAGGER_USER,
+  swaggerPass: process.env.SWAGGER_PASSWORD
 }));

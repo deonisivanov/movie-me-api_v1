@@ -2,17 +2,26 @@ import { Body, Controller, Get, Post, Query, Res, UseGuards } from '@nestjs/comm
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
 import { BaseResolver } from '@lib';
-import { Cookie, CurrentUser } from 'src/common/decorators';
+import { Cookie, CurrentUser, GenericController, SwaggerResponse } from 'src/common/decorators';
 import { GoogleGuard } from 'src/common/guards';
 import { User } from '@entities';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 
-@Controller('auth')
+@GenericController('auth', false)
 export class AuthController extends BaseResolver {
   constructor(private readonly authService: AuthService) {
     super();
   }
 
   @Post('login')
+  @ApiOperation({ summary: 'User Login' })
+  @SwaggerResponse({
+    operation: 'Reset password',
+    notFound: "Otp doesn't exist.",
+    badRequest: ['Invalid login or password', 'Please verify your account'],
+    body: LoginDto
+  })
+  @ApiBody({ type: LoginDto })
   async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: ExpressResponse) {
     return await this.authService.login(loginDto, response);
   }

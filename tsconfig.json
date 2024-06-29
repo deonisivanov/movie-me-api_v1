@@ -22,7 +22,7 @@
       //   "@lib/*": ["src/lib/*"],
 
       "@common": ["src/common"],
-      //   "@common/*": ["src/common/*"],
+      "@common/*": ["src/common/*"],
 
       //   "@modules": ["src/modules"],
       "@modules/*": ["src/modules/*"],
