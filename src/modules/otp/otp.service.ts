@@ -1,43 +1,51 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { OtpRepository } from './otp.repository';
+import { BaseResolver } from '@lib';
 
 @Injectable()
-export class OtpService {
-  constructor(private readonly otpRepository: OtpRepository) {}
+export class OtpService extends BaseResolver {
+  private readonly logger = new Logger(OtpService.name);
+
+  constructor(private readonly otpRepository: OtpRepository) {
+    super();
+  }
 
   public async isOtpSessionExists(login: string): Promise<boolean> {
     const sessionData = await this.otpRepository.getOtpSession(login);
     return !!sessionData;
   }
 
-  public async sendOtpCode(login: string) {
+  public async sendOtp(login: string): Promise<string> {
     const otpSessionData = await this.otpRepository.getOtpSession(login);
     if (otpSessionData) {
-      throw new BadRequestException('Test error');
+      this.logger.warn(`Attempt to send OTP for existing session: ${login}`);
+      throw new BadRequestException(this.wrapFail('OTP session already exists'));
     }
 
-    const otpCode = this.createOtpCode();
-    await this.otpRepository.saveOtpKey(login, otpCode);
+    const otp = this.createOtp();
+    await this.otpRepository.saveOtpKey(login, otp);
 
-    return `Your verification code is ${otpCode}`;
+    this.logger.log(`OTP sent to ${login}`);
+    return `Your verification code is ${otp}`;
   }
 
-  public async verifyOtpCode(login: string, otpCode: string) {
+  public async verifyOtp(login: string, otp: string): Promise<void> {
     const otpSessionData = await this.otpRepository.getOtpSession(login);
     if (!otpSessionData) {
-      throw new BadRequestException('Otp session not found');
+      this.logger.warn(`OTP verification attempt for non-existent session: ${login}`);
+      throw new BadRequestException(this.wrapFail('OTP session not found'));
     }
 
-    if (otpCode !== otpSessionData) {
-      throw new BadRequestException('Invalid otp code');
+    if (otp !== otpSessionData) {
+      this.logger.warn(`Invalid OTP attempt for ${login}`);
+      throw new BadRequestException(this.wrapFail('Invalid OTP code'));
     }
 
     await this.otpRepository.deleteOtpKey(login);
+    this.logger.log(`OTP verified and session deleted for ${login}`);
   }
 
-  public async resendOtpCode() {}
-
-  private createOtpCode(): string {
+  private createOtp(): string {
     const min = 100000;
     const max = 999999;
     const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;

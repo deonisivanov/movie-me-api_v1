@@ -9,6 +9,7 @@ declare global {
 
   interface AccessTokenPayload {
     id: string;
+    verified: boolean;
   }
 
   interface AuthenticatedUserInfo {

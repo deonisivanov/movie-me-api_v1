@@ -24,4 +24,8 @@ export class UsersService extends BaseService<User> {
 
     return await this.findOne({ where: { id: userId } });
   }
+
+  public async verifyUser(id: string) {
+    return await this.update(id, { verified: true });
+  }
 }

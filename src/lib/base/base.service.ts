@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial, Entity, InsertResult, FindOneOptions } from 'typeorm';
+import { Repository, DeepPartial, Entity, InsertResult, FindOneOptions, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class BaseService<Entity> {
@@ -31,5 +31,9 @@ export class BaseService<Entity> {
 
   public async save(body: DeepPartial<Entity>): Promise<Entity> {
     return await this.repository.save(body);
+  }
+
+  public async update(id: number | string, body: DeepPartial<Entity>): Promise<UpdateResult> {
+    return await this.repository.update(id, body as any);
   }
 }

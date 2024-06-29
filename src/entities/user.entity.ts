@@ -2,14 +2,17 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ unique: true })
   login: string;
 
   @Column({ nullable: true })
   password?: string;
+
+  @Column({ default: false })
+  verified: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
