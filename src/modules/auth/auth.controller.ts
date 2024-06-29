@@ -7,10 +7,8 @@ import { GoogleGuard } from 'src/common/guards';
 import { User } from '@entities';
 
 @GenericController('Auth', false)
-export class AuthController extends BaseResolver {
-  constructor(private readonly authService: AuthService) {
-    super();
-  }
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @SwaggerResponse({
@@ -84,6 +82,6 @@ export class AuthController extends BaseResolver {
 
   @Get('oauth/login')
   oauthMock(@Query() query: QueryTokenOauth2) {
-    return this.wrapSuccess({ message: 'Success login via oauth', accessToken: query.token });
+    return { accessToken: query.token };
   }
 }
