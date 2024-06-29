@@ -1,6 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial, Entity, InsertResult, FindOneOptions, UpdateResult } from 'typeorm';
+import {
+  Repository,
+  DeepPartial,
+  Entity,
+  InsertResult,
+  FindOneOptions,
+  UpdateResult,
+  DeleteResult,
+  FindOptionsWhere
+} from 'typeorm';
 
 @Injectable()
 export class BaseService<Entity> {
@@ -35,5 +44,13 @@ export class BaseService<Entity> {
 
   public async update(id: number | string, body: DeepPartial<Entity>): Promise<UpdateResult> {
     return await this.repository.update(id, body as any);
+  }
+
+  public async delete(criteria: number | string | FindOptionsWhere<Entity>): Promise<DeleteResult> {
+    if (typeof criteria === 'number' || typeof criteria === 'string') {
+      return await this.repository.delete(criteria);
+    } else {
+      return await this.repository.delete(criteria);
+    }
   }
 }

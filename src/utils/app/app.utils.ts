@@ -14,7 +14,7 @@ export const AppUtils = {
       docExpansion: 'list',
       filter: true,
       showRequestDuration: true,
-      tryItOutEnabled: true,
+      tryItOutEnabled: false,
       displayOperationId: true,
       persistAuthorization: true,
       operationsSorter: (a: { get: (argument: string) => string }, b: { get: (argument: string) => string }) => {

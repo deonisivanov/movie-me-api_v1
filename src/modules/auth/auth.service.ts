@@ -2,7 +2,7 @@ import { BaseResolver } from '@lib';
 import { OtpService } from '@modules/otp';
 import { TokensService } from '@modules/tokens';
 import { UsersService } from '@modules/users';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
 import { PasswordUtils } from 'src/utils';
 import { User } from '@entities';
@@ -23,7 +23,12 @@ export class AuthService extends BaseResolver {
     const { login, password } = loginDto;
     const existUser = await this.usersService.findOneByLogin(login);
 
-    if (!existUser || !(await PasswordUtils.verifyPassword(password, existUser.password))) {
+    if (!existUser) {
+      this.logger.warn(`Failed login attempt for user: ${login}`);
+      throw new NotFoundException(this.wrapFail('User not found'));
+    }
+
+    if (!(await PasswordUtils.verifyPassword(password, existUser.password))) {
       this.logger.warn(`Failed login attempt for user: ${login}`);
       throw new BadRequestException(this.wrapFail('Invalid login or password'));
     }

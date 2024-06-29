@@ -1,46 +1,70 @@
-import { Body, Controller, Get, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Get, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
 import { BaseResolver } from '@lib';
 import { Cookie, CurrentUser, GenericController, SwaggerResponse } from 'src/common/decorators';
 import { GoogleGuard } from 'src/common/guards';
 import { User } from '@entities';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
 
-@GenericController('auth', false)
+@GenericController('Auth', false)
 export class AuthController extends BaseResolver {
   constructor(private readonly authService: AuthService) {
     super();
   }
 
   @Post('login')
-  @ApiOperation({ summary: 'User Login' })
   @SwaggerResponse({
-    operation: 'Reset password',
-    notFound: "Otp doesn't exist.",
+    operation: 'User login',
     badRequest: ['Invalid login or password', 'Please verify your account'],
-    body: LoginDto
+    notFound: 'User not found',
+    body: LoginDto,
+    response: { accessToken: 'string' }
   })
-  @ApiBody({ type: LoginDto })
   async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: ExpressResponse) {
     return await this.authService.login(loginDto, response);
   }
 
   @Post('register')
+  @SwaggerResponse({
+    operation: 'User registration',
+    badRequest: ['User with this login already exists'],
+    body: RegisterDto,
+    response: { retryDelay: 123456 }
+  })
   async register(@Body() registerDto: RegisterDto) {
     return await this.authService.register(registerDto);
   }
 
+  @SwaggerResponse({
+    operation: 'Verify OTP',
+    badRequest: ['User with this login already exists', 'OTP session not found', 'Invalid OTP code'],
+    notFound: 'User not found',
+    body: VerifyOtpDto,
+    response: { retryDelay: 123456 }
+  })
   @Post('verify-otp')
   async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto, @Res({ passthrough: true }) response: ExpressResponse) {
     return await this.authService.verifyOtp(verifyOtpDto, response);
   }
 
+  @SwaggerResponse({
+    operation: 'Resend OTP',
+    badRequest: ['User with this login already exists', 'OTP session not found', 'Invalid OTP code'],
+    notFound: 'User not found',
+    body: ResendOtpDto,
+    response: { retryDelay: 123456 }
+  })
   @Post('resend-otp')
   async resendOtp(@Body() resendOtpDto: ResendOtpDto) {
     return await this.authService.resendOtp(resendOtpDto);
   }
 
+  @SwaggerResponse({
+    operation: 'Refresh tokens',
+    badRequest: ['Invalid refresh token'],
+    notFound: 'User not found',
+    response: { accessToken: 'string' }
+  })
   @Post('refresh')
   async refresh(@Cookie('refreshToken') refreshToken: string, @Res({ passthrough: true }) response: ExpressResponse) {
     return await this.authService.refreshTokens(refreshToken, response);
