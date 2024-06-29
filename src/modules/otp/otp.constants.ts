@@ -1,0 +1,1 @@
+export const OTP_CODE_EXPIRE_TIME_MS = 120000;

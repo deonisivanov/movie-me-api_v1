@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
-import { UsersService } from '@modules/users';
 import { BaseResolver } from '@lib';
 import { OtpService } from '@modules/otp';
 import { TokensService } from '@modules/tokens';
+import { UsersService } from '@modules/users';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
+import { PasswordUtils } from 'src/utils';
 
 @Injectable()
 export class AuthService extends BaseResolver {
@@ -17,7 +18,23 @@ export class AuthService extends BaseResolver {
     super();
   }
 
-  public async register(registerDto: RegisterDto): Promise<void> {
+  public async login(loginDto: LoginDto) {
+    const existUser = await this.usersService.findOneByLogin(loginDto.login);
+    const isPasswordValid = await PasswordUtils.verifyPassword(loginDto.password, existUser.password);
+
+    if (!isPasswordValid) {
+      throw new BadRequestException(this.wrapFail('Invalid login or password'));
+    }
+
+    const tokens = await this.tokensService.generateTokenPair(existUser.id, {
+      id: existUser.id,
+      verified: existUser.verified
+    });
+
+    return tokens;
+  }
+
+  public async register(registerDto: RegisterDto) {
     const existUser = await this.usersService.findOneByLogin(registerDto.login);
     if (existUser) {
       this.logger.warn(`Registration attempt with existing login: ${registerDto.login}`);
@@ -25,21 +42,15 @@ export class AuthService extends BaseResolver {
     }
 
     await this.usersService.createUser(registerDto);
-    await this.otpService.sendOtp(registerDto.login);
 
-    this.logger.log(`User registered and OTP sent to ${registerDto.login}`);
+    return await this.otpService.sendOtp(registerDto.login);
   }
 
   public async verifyOtp(verifyOtpDto: VerifyOtpDto) {
     const { login, otp } = verifyOtpDto;
 
     await this.otpService.verifyOtp(login, otp);
-
-    const existUser = await this.usersService.findOneByLogin(login);
-    if (!existUser) {
-      this.logger.warn(`Verification attempt for non-existent user: ${login}`);
-      throw new BadRequestException(this.wrapFail('User not found'));
-    }
+    const existUser = await this.checkUserExistence(login, true);
 
     await this.usersService.verifyUser(existUser.id);
 
@@ -49,17 +60,30 @@ export class AuthService extends BaseResolver {
     });
 
     this.logger.log(`User ${existUser.login} verified and tokens generated`);
+
     return tokens;
   }
 
-  public async resendOtp(resendOtpDto: ResendOtpDto): Promise<void> {
-    const existUser = await this.usersService.findOneByLogin(resendOtpDto.login);
-    if (!existUser) {
-      this.logger.warn(`OTP resend attempt for non-existent user: ${resendOtpDto.login}`);
+  public async resendOtp(resendOtpDto: ResendOtpDto) {
+    await this.checkUserExistence(resendOtpDto.login, true);
+    this.logger.log(`OTP resent to ${resendOtpDto.login}`);
+
+    return await this.otpService.sendOtp(resendOtpDto.login);
+  }
+
+  private async checkUserExistence(login: string, shouldExist: boolean = false) {
+    const existUser = await this.usersService.findOneByLogin(login);
+
+    if (shouldExist && !existUser) {
+      this.logger.warn(`User with login ${login} not found`);
       throw new BadRequestException(this.wrapFail('User not found'));
     }
 
-    await this.otpService.sendOtp(resendOtpDto.login);
-    this.logger.log(`OTP resent to ${resendOtpDto.login}`);
+    if (!shouldExist && existUser) {
+      this.logger.warn(`User with login ${login} already exists`);
+      throw new BadRequestException(this.wrapFail('User with this login already exists'));
+    }
+
+    return existUser;
   }
 }

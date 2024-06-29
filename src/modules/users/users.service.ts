@@ -16,13 +16,17 @@ export class UsersService extends BaseService<User> {
   }
 
   public async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { password, ...restDto } = createUserDto;
+    try {
+      const { password, ...restDto } = createUserDto;
 
-    const hashedPassword = await PasswordUtils.hashPassword(password);
-    const insertResult = await this.insert({ ...restDto, password: hashedPassword });
-    const userId = insertResult.identifiers[0].id;
+      const hashedPassword = await PasswordUtils.hashPassword(password);
+      const insertResult = await this.insert({ ...restDto, password: hashedPassword });
+      const userId = insertResult.identifiers[0].id;
 
-    return await this.findOne({ where: { id: userId } });
+      return await this.findOne({ where: { id: userId } });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   public async verifyUser(id: string) {

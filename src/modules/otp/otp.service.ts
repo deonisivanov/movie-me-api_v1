@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { OtpRepository } from './otp.repository';
 import { BaseResolver } from '@lib';
+import { OTP_CODE_EXPIRE_TIME_MS } from './otp.constants';
 
 @Injectable()
 export class OtpService extends BaseResolver {
@@ -15,7 +16,7 @@ export class OtpService extends BaseResolver {
     return !!sessionData;
   }
 
-  public async sendOtp(login: string): Promise<string> {
+  public async sendOtp(login: string) {
     const otpSessionData = await this.otpRepository.getOtpSession(login);
     if (otpSessionData) {
       this.logger.warn(`Attempt to send OTP for existing session: ${login}`);
@@ -25,11 +26,10 @@ export class OtpService extends BaseResolver {
     const otp = this.createOtp();
     await this.otpRepository.saveOtpKey(login, otp);
 
-    this.logger.log(`OTP sent to ${login}`);
-    return `Your verification code is ${otp}`;
+    return this.wrapSuccess({ retryDelay: OTP_CODE_EXPIRE_TIME_MS });
   }
 
-  public async verifyOtp(login: string, otp: string): Promise<void> {
+  public async verifyOtp(login: string, otp: string) {
     const otpSessionData = await this.otpRepository.getOtpSession(login);
     if (!otpSessionData) {
       this.logger.warn(`OTP verification attempt for non-existent session: ${login}`);
@@ -42,7 +42,6 @@ export class OtpService extends BaseResolver {
     }
 
     await this.otpRepository.deleteOtpKey(login);
-    this.logger.log(`OTP verified and session deleted for ${login}`);
   }
 
   private createOtp(): string {
