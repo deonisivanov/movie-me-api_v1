@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PasswordUtils } from 'src/utils';
 
 import { BaseResolver } from '@lib';
 
@@ -8,6 +7,8 @@ import { TokensService } from '@modules/tokens';
 import { UsersService } from '@modules/users';
 
 import type { User } from '@entities';
+
+import { PasswordUtils } from '@utils';
 
 import type { LoginDto, RegisterDto, ResendOtpDto, VerifyOtpDto } from './dto';
 

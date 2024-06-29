@@ -1,10 +1,10 @@
-import type { ExecutionContext} from '@nestjs/common';
+import type { ExecutionContext } from '@nestjs/common';
 import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JsonWebTokenError, TokenExpiredError } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 
-import { IS_PUBLIC_KEY_META } from '../constant';
+import { IS_PUBLIC_KEY_META } from '@common/constant';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {

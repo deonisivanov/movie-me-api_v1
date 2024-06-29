@@ -1,12 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PasswordUtils } from 'src/utils';
 import { Repository } from 'typeorm';
 
 import { BaseService } from '@lib';
 
 import { User } from '@entities';
+
+import { PasswordUtils } from '@utils';
 
 import type { CreateUserDto } from './dto';
 

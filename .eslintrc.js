@@ -39,6 +39,7 @@ module.exports = {
           ['^@common'],
           ['^@modules'],
           ['^@entities'],
+          ['^@utils'],
           // Anything that starts with a dot.
           ['^\\./', '^\\.\\./']
         ]

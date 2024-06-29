@@ -1,8 +1,9 @@
 import type { INestApplication } from '@nestjs/common';
 import type { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { IS_PUBLIC_KEY_META } from 'src/common/constant';
 import { getMiddleware } from 'swagger-stats';
+
+import { IS_PUBLIC_KEY_META } from '@common/constant';
 
 export const AppUtils = {
   setupSwagger(app: INestApplication, configService: ConfigService<Configs, true>) {
