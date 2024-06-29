@@ -5,16 +5,16 @@ declare global {
     sub: string;
     exp: number;
     jti: string;
+    verified?: boolean;
   }
 
   interface AccessTokenPayload {
-    id: string;
     verified: boolean;
   }
 
-  interface AuthenticatedUserInfo {
-    id: string;
-  }
-
   type RefreshTokenPayload = {};
+
+  interface QueryTokenOauth2 {
+    token: string;
+  }
 }

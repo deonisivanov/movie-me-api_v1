@@ -49,9 +49,8 @@ export class TokensService {
     return { accessToken, refreshToken };
   }
 
-  public async generateRefreshTokenPair(sub: string, oldJti: string, payload: AccessTokenPayload) {
-    await this.tokensRepository.deleteRefreshTokenSession(sub, oldJti);
-    return await this.generateTokenPair(sub, payload);
+  public deleteRefreshTokenSession(sub: string, oldJti: string): Promise<void> {
+    return this.tokensRepository.deleteRefreshTokenSession(sub, oldJti);
   }
 
   private async generateAccessToken(subject: string, payload?: AccessTokenPayload, options?: JwtSignOptions): Promise<string> {

@@ -1,13 +1,17 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { OtpRepository } from './otp.repository';
-import { BaseResolver } from '@lib';
+import { BaseResolver, MailerService, VonageService } from '@lib';
 import { OTP_CODE_EXPIRE_TIME_MS } from './otp.constants';
 
 @Injectable()
 export class OtpService extends BaseResolver {
   private readonly logger = new Logger(OtpService.name);
 
-  constructor(private readonly otpRepository: OtpRepository) {
+  constructor(
+    private readonly otpRepository: OtpRepository,
+    private readonly mailerService: MailerService,
+    private readonly vonageService: VonageService
+  ) {
     super();
   }
 
@@ -23,10 +27,21 @@ export class OtpService extends BaseResolver {
       throw new BadRequestException(this.wrapFail('OTP session already exists'));
     }
 
+    const loginType = this.getLoginType(login);
     const otp = this.createOtp();
     await this.otpRepository.saveOtpKey(login, otp);
 
-    return this.wrapSuccess({ retryDelay: OTP_CODE_EXPIRE_TIME_MS });
+    if (loginType === 'email') {
+      await this.mailerService.sendMail(login, otp);
+    }
+
+    if (loginType === 'phone') {
+      await this.vonageService.sendSms(login, `Your verification code is ${otp}`);
+    }
+
+    return {
+      retryDelay: OTP_CODE_EXPIRE_TIME_MS
+    };
   }
 
   public async verifyOtp(login: string, otp: string) {
@@ -49,5 +64,9 @@ export class OtpService extends BaseResolver {
     const max = 999999;
     const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     return randomNumber.toString();
+  }
+
+  private getLoginType(login: string): 'phone' | 'email' {
+    return login.includes('@') ? 'email' : 'phone'; // Простая валидация
   }
 }

@@ -17,16 +17,16 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<AuthenticatedUserInfo> {
-    const { sub, jti } = payload;
+  async validate(payload: JwtPayload): Promise<AccessTokenPayload> {
+    const { sub, jti, verified } = payload;
 
     const refreshSessionExists = await this.tokensService.isRefreshTokenSessionExists(sub, jti);
-    if (!refreshSessionExists) {
+    if (!refreshSessionExists || !verified) {
       throw new UnauthorizedException();
     }
 
     return {
-      id: sub
+      verified
     };
   }
 }
